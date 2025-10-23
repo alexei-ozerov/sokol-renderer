@@ -5,9 +5,14 @@ import "base:runtime"
 import sapp "../../vendor/sokol/app"
 import shelpers "../../vendor/sokol/helpers"
 
+import ld "../data"
 
 set_runtime_pointer :: proc(ctx: ^runtime.Context) {
     p_runtime_context = ctx
+}
+
+set_app_ctx_pointer :: proc(ctx: ^ld.App_Context) {
+    p_app_context = ctx
 }
 
 run_app :: proc(
@@ -15,8 +20,10 @@ run_app :: proc(
 	window_height: i32,
 	window_title: cstring,
 	ctx: ^runtime.Context,
+    cfg: ^ld.App_Context,
 ) {
     set_runtime_pointer(ctx)
+    set_app_ctx_pointer(cfg)
 	sapp.run(
 		{
 			width = window_width,

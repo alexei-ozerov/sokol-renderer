@@ -25,13 +25,20 @@ runtime_context: runtime.Context
 state : ld.Core_Context
 p_state := &state
 
+
 main :: proc() {
 	context.logger = log.create_console_logger()
 	runtime_context = context
+
+    app_context := ld.App_Context {
+        bg_col = WINDOW_BG_COL
+    }
+
 	la.run_app(
 			window_width = WINDOW_WIDTH,
 			window_height = WINDOW_HEIGHT,
 			window_title = WINDOW_TITLE,
             ctx = &runtime_context,
+            cfg = &app_context,
 	)
 }

@@ -2,4 +2,4 @@
 *.dll
 *.a
 
-core
+core/core

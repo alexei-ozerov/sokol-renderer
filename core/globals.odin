@@ -1,0 +1,10 @@
+package main
+
+
+WINDOW_TITLE :: "Sokol Renderer"
+WINDOW_WIDTH :: 800
+WINDOW_HEIGHT :: 800
+
+MAX_QUADS :: 500
+MAX_VERTS :: 500 * 6
+MAX_ENTITIES :: 2048

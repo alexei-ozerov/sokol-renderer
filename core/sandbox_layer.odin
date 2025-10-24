@@ -9,9 +9,7 @@ import la "../library/app"
 import lu "../library/util"
 
 
-on_event :: proc() {
-    log.debug("Trans rights.")
-}
+on_event :: proc() {}
 
 on_frame :: proc() {
     shader := sg.make_shader(generic_shader_desc(sg.query_backend()))
@@ -57,9 +55,7 @@ on_frame :: proc() {
 	sg.commit()
 }
 
-on_init :: proc() {
-    log.debug("In the beginning.")
-}
+on_init :: proc() {}
 
 on_shutdown :: proc() {
     log.debug("Goodnight.")

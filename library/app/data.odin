@@ -4,7 +4,16 @@ import sg "../../vendor/sokol/gfx"
 
 
 Core_Context :: struct {
-    p_ac: ^App_Context
+    p_ac: ^App_Context,
+    sprite_render_pass: Render_Data
+}
+
+Render_Data :: struct {
+	texture_buffer:         [dynamic]sg.Image,
+	vertex_buffer: sg.Buffer,
+	index_buffer:  sg.Buffer,
+	sampler:       sg.Sampler,
+	view:          sg.View,
 }
 
 App_Context :: struct {

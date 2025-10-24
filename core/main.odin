@@ -1,39 +1,29 @@
 package main
 
-import "base:builtin"
 import "base:runtime"
 
-import "core:fmt"
 import "core:log"
-import "core:math"
-import "core:math/linalg"
-import "core:strings"
-import "core:time"
-
-import sapp "../vendor/sokol/app"
-import sg "../vendor/sokol/gfx"
-import sglue "../vendor/sokol/glue"
-import shelpers "../vendor/sokol/helpers"
-import slog "../vendor/sokol/log"
 
 import la "../library/app"
-import ld "../library/data"
-import lu "../library/util/"
 
 
 runtime_context: runtime.Context
-state : ld.Core_Context
+state : la.Core_Context
 p_state := &state
-
 
 main :: proc() {
 	context.logger = log.create_console_logger()
 	runtime_context = context
 
-    app_context := ld.App_Context {
-        bg_col = WINDOW_BG_COL
-    }
+    // Configure application
+    app_context := la.App_Context{}
+    app_context.bg_col = WINDOW_BG_COL
 
+    // Setup layer
+    sandbox_layer_data := la.create_layer_data(on_init, on_event, on_frame, on_shutdown)
+    app_context.p_ld = &sandbox_layer_data
+
+    // Run application
 	la.run_app(
 			window_width = WINDOW_WIDTH,
 			window_height = WINDOW_HEIGHT,
@@ -41,4 +31,5 @@ main :: proc() {
             ctx = &runtime_context,
             cfg = &app_context,
 	)
+
 }

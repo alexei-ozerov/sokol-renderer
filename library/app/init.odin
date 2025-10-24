@@ -5,25 +5,20 @@ import "base:runtime"
 import sapp "../../vendor/sokol/app"
 import shelpers "../../vendor/sokol/helpers"
 
-import ld "../data"
-
-set_runtime_pointer :: proc(ctx: ^runtime.Context) {
-    p_runtime_context = ctx
-}
-
-set_app_ctx_pointer :: proc(ctx: ^ld.App_Context) {
-    p_app_context = ctx
-}
 
 run_app :: proc(
 	window_width: i32,
 	window_height: i32,
 	window_title: cstring,
 	ctx: ^runtime.Context,
-    cfg: ^ld.App_Context,
+    cfg: ^App_Context,
 ) {
+    // TODO (ozerova): Check on alternative ways to capture globals and 
+    //                 make them available inside of the library.
     set_runtime_pointer(ctx)
     set_app_ctx_pointer(cfg)
+
+    // Create window, bind callbacks
 	sapp.run(
 		{
 			width = window_width,

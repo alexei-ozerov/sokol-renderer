@@ -10,12 +10,10 @@ import sglue "../../vendor/sokol/glue"
 import shelpers "../../vendor/sokol/helpers"
 import slog "../../vendor/sokol/log"
 
-import ld "../data"
-
 
 // Application State Pointers
 p_runtime_context: ^runtime.Context
-p_app_context: ^ld.App_Context
+p_app_context: ^App_Context
 
 init_cb :: proc "c" () {
     context = p_runtime_context^
@@ -27,6 +25,10 @@ init_cb :: proc "c" () {
 			allocator = sg.Allocator(shelpers.allocator(p_runtime_context)),
 		},
 	)
+
+    if p_app_context.p_ld != nil {
+        p_app_context.p_ld.on_init()
+    }
 }
 
 frame_cb :: proc "c" () {
@@ -37,16 +39,22 @@ frame_cb :: proc "c" () {
 		colors = {0 = {load_action = sg.Load_Action.CLEAR, clear_value = p_app_context.bg_col}}
 	}
 
-	// Start render pass
+	// Set BG Col
 	sg.begin_pass(sg.Pass{action = pass_action, swapchain = shelpers.glue_swapchain()})
-
-	// End render pass
 	sg.end_pass()
 	sg.commit()
+
+    if p_app_context.p_ld != nil {
+        p_app_context.p_ld.on_frame()
+    }
 }
 
 cleanup_cb :: proc "c" () {
     context = p_runtime_context^
+
+    if p_app_context.p_ld != nil {
+        p_app_context.p_ld.on_shutdown()
+    }
 
 	// Free resources
 	sg.shutdown()
@@ -55,6 +63,8 @@ cleanup_cb :: proc "c" () {
 event_cb :: proc "c" (ev: ^sapp.Event) {
     context = p_runtime_context^
 
-    log.debug("Test123")
+    if p_app_context.p_ld != nil {
+        p_app_context.p_ld.on_event()
+    }
 }
 

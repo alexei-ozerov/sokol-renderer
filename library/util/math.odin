@@ -9,6 +9,5 @@ Mat4 :: matrix[4, 4]f32
 Vertex :: struct {
     pos: Vec3,
     col: Vec4,
-    uv: Vec3,
-    tex_id: int,
+    uv: Vec2,
 }

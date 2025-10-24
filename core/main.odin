@@ -20,8 +20,12 @@ main :: proc() {
     app_context.bg_col = WINDOW_BG_COL
 
     // Setup layer
-    sandbox_layer_data := la.create_layer_data(on_init, on_event, on_frame, on_shutdown)
-    app_context.p_ld = &sandbox_layer_data
+    app_context.p_ld = &la.Layer_Data{
+        on_init, 
+        on_event, 
+        on_frame, 
+        on_shutdown
+    }
 
     // Run application
 	la.run_app(

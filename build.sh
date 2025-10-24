@@ -3,20 +3,15 @@
 set -e 
 
 RUN_MODE=$1
-SHADERS=$(ls assets/shaders | grep -v compiled | grep -v archive)
+SHADERS=$(ls assets/shaders | grep -v archive)
 
 echo -e "Checking target directories exist."
 mkdir -p target
 
-echo -e "Cleaning compiled shader directory."
-if [[ $(ls assets/compiled) != "" ]]; then
-    rm assets/compiled/*
-fi
-
 echo -e "Recompiling shaders."
 for F in $SHADERS; do
     SHADER_NAME=${F::-5}
-    ./tools/sokol-shdc --input assets/shaders/${SHADER_NAME}.glsl -o assets/compiled/${SHADER_NAME}_shader.odin -f sokol_odin -l hlsl5:glsl430
+    ./tools/sokol-shdc --input assets/shaders/${SHADER_NAME}.glsl -o core/${SHADER_NAME}_shader.odin -f sokol_odin -l hlsl5:glsl430
 done
 
 echo -e "Cleaning build artifacts."

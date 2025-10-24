@@ -1,4 +1,4 @@
-package app 
+package app
 
 import "base:runtime"
 
@@ -16,7 +16,7 @@ p_runtime_context: ^runtime.Context
 p_app_context: ^App_Context
 
 init_cb :: proc "c" () {
-    context = p_runtime_context^
+	context = p_runtime_context^
 
 	sg.setup(
 		{
@@ -26,45 +26,46 @@ init_cb :: proc "c" () {
 		},
 	)
 
-    if p_app_context.p_ld != nil {
-        p_app_context.p_ld.on_init()
-    }
+	if p_app_context.p_ld != nil {
+		p_app_context.p_ld.on_init()
+	}
 }
 
 frame_cb :: proc "c" () {
-    context = p_runtime_context^
+	context = p_runtime_context^
 
-    // Pass Action
+	// Pass Action
 	pass_action := sg.Pass_Action {
-		colors = {0 = {load_action = sg.Load_Action.CLEAR, clear_value = p_app_context.bg_col}}
+		colors = {0 = {load_action = sg.Load_Action.CLEAR, clear_value = p_app_context.bg_col}},
 	}
 
 	// Set BG Col
 	sg.begin_pass(sg.Pass{action = pass_action, swapchain = shelpers.glue_swapchain()})
+
+	if p_app_context.p_ld != nil {
+		p_app_context.p_ld.on_frame()
+	}
+
 	sg.end_pass()
 	sg.commit()
-
-    if p_app_context.p_ld != nil {
-        p_app_context.p_ld.on_frame()
-    }
 }
 
 cleanup_cb :: proc "c" () {
-    context = p_runtime_context^
+	context = p_runtime_context^
 
-    if p_app_context.p_ld != nil {
-        p_app_context.p_ld.on_shutdown()
-    }
+	if p_app_context.p_ld != nil {
+		p_app_context.p_ld.on_shutdown()
+	}
 
 	// Free resources
 	sg.shutdown()
 }
 
 event_cb :: proc "c" (ev: ^sapp.Event) {
-    context = p_runtime_context^
+	context = p_runtime_context^
 
-    if p_app_context.p_ld != nil {
-        p_app_context.p_ld.on_event()
-    }
+	if p_app_context.p_ld != nil {
+		p_app_context.p_ld.on_event()
+	}
 }
 

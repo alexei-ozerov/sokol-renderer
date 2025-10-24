@@ -45,7 +45,7 @@ create_sprite :: proc(sprite_image_path: cstring) {
 }
 
 on_init :: proc() {
-	create_sprite("../assets/images/ferris.png")
+	create_sprite("assets/images/ferris.png")
 }
 
 on_frame :: proc() {

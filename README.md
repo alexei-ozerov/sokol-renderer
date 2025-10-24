@@ -1,7 +1,7 @@
 # Sokol Renderer
 An educational project to build a renderer on top of Sokol.
 
-_**In order to run, make sure you compile the sokol libs inside of `vendor/sokol` by running the appropriate script for your operating system. **_
+_**In order to run, make sure you compile the sokol libs inside of `vendor/sokol` by running the appropriate script for your operating system.**_
 
 Then, execute the build script:
 

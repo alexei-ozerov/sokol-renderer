@@ -42,7 +42,6 @@ create_sprite :: proc(sprite_image_path: cstring) {
 		wrap_v     = .CLAMP_TO_EDGE,
 	}
 	state.sprite_render_pass.sampler = sg.make_sampler(sampler_desc)
-
 }
 
 on_init :: proc() {

@@ -122,7 +122,7 @@ on_frame :: proc() {
 	sg.apply_bindings(bindings)
 
 	// sg.apply_uniforms(UB_vs_params, sg_range(&Vs_Params{mvp = mvp_mat4}))
-	sg.draw(0, len(indices) + 1, 1)
+	sg.draw(0, len(indices), 1)
 
 	sg.end_pass()
 	sg.commit()

@@ -41,13 +41,12 @@ frame_cb :: proc "c" () {
 
 	// Set BG Col
 	sg.begin_pass(sg.Pass{action = pass_action, swapchain = shelpers.glue_swapchain()})
+	sg.end_pass()
+	sg.commit()
 
 	if p_app_context.p_ld != nil {
 		p_app_context.p_ld.on_frame()
 	}
-
-	sg.end_pass()
-	sg.commit()
 }
 
 cleanup_cb :: proc "c" () {

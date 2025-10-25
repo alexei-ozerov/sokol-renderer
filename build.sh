@@ -19,10 +19,6 @@ if [[ $(ls target) != "" ]]; then
     rm target/*
 fi
 
-echo -e "Linting core and library code."
-odinfmt ./core
-odinfmt ./library
-
 if [[ ${RUN_MODE} == "debug" ]]; then
     echo -e "Running core in debug mode."
     odin run ./core -debug -out:target/core

@@ -16,8 +16,9 @@ main :: proc() {
 	runtime_context = context
 
 	// Configure application
-	app_context := la.App_Context{}
-	app_context.bg_col = WINDOW_BG_COL
+	app_context := la.App_Context {
+		bg_col = WINDOW_BG_COL,
+	}
 
 	// Setup layer
 	app_context.p_ld = &la.Layer_Data{on_init, on_event, on_frame, on_shutdown}

@@ -4,9 +4,9 @@
 // @ctype mat4 m.Mat4
 
 @vs vs_main
-layout(binding=0) uniform vs_params {
-  mat4 mvp;
-};
+// layout(binding=0) uniform vs_params {
+//   mat4 mvp;
+// };
 
 in vec3 in_pos;
 in vec4 in_col;

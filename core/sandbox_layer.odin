@@ -43,6 +43,7 @@ create_sprite :: proc(sprite_image_path: cstring) {
 	}
 	state.sprite_render_pass.sampler = sg.make_sampler(sampler_desc)
 
+    // Setup shader, pipeline
 	stride := (size_of(lu.Vertex))
 	shader := sg.make_shader(generic_shader_desc(sg.query_backend()))
 	pipeline_desc := sg.query_pipeline_defaults(
@@ -63,13 +64,8 @@ create_sprite :: proc(sprite_image_path: cstring) {
 		},
 	)
 	state.sprite_render_pass.pip = sg.make_pipeline(pipeline_desc)
-}
 
-on_init :: proc() {
-	create_sprite("assets/images/ferris.png")
-}
-
-on_frame :: proc() {
+    // Setup vertex and index buffers
 	vertices := []lu.Vertex {
 		// Quad 1
 		{pos = {0.5, 0.5, 0.0}, col = {1.0, 1.0, 1.0, 1.0}, uv = {0.0, 0.0}},
@@ -77,13 +73,27 @@ on_frame :: proc() {
 		{pos = {-0.5, -0.5, 0.0}, col = {1.0, 1.0, 1.0, 1.0}, uv = {1.0, 1.0}},
 		{pos = {-0.5, 0.5, 0.0}, col = {1.0, 1.0, 1.0, 1.0}, uv = {1.0, 0.0}},
 
-		// {pos = {1.5, 1.5, 0.0}, col = {1.0, 1.0, 1.0, 1.0}, uv = {0.0, 0.0}},
-		// {pos = {1.5, 1.5, 0.0}, col = {1.0, 1.0, 1.0, 1.0}, uv = {0.0, 1.0}},
-		// {pos = {0.5, 1.5, 0.0}, col = {1.0, 1.0, 1.0, 1.0}, uv = {1.0, 1.0}},
-		// {pos = {0.5, 1.5, 0.0}, col = {1.0, 1.0, 1.0, 1.0}, uv = {1.0, 0.0}},
+
+        // Quad 2
+		{pos = {0.5, 0.5, 0.0}, col = {1.0, 1.0, 1.0, 1.0}, uv = {0.0, 0.0}},
+		{pos = {0.5, -0.5, 0.0}, col = {1.0, 1.0, 1.0, 1.0}, uv = {0.0, 1.0}},
+		{pos = {-0.5, -0.5, 0.0}, col = {1.0, 1.0, 1.0, 1.0}, uv = {1.0, 1.0}},
+		{pos = {-0.5, 0.5, 0.0}, col = {1.0, 1.0, 1.0, 1.0}, uv = {1.0, 0.0}},
 	}
 
-	indices: [1 * 6]u16
+    // Translate x right
+    vertices[0].pos.x -= 1
+    vertices[1].pos.x -= 1
+    vertices[2].pos.x -= 1
+    vertices[3].pos.x -= 1
+
+    // Translate x left
+    vertices[4].pos.x += 1
+    vertices[5].pos.x += 1
+    vertices[6].pos.x += 1
+    vertices[7].pos.x += 1
+
+	indices: [2 * 6]u16
 	quad_counter := len(vertices) / 4
 
 	offset := 0
@@ -102,6 +112,13 @@ on_frame :: proc() {
 	// Create the vertex and index buffers for this sprite
 	state.sprite_render_pass.vbuf = sg.make_buffer({data = lu.sg_range(vertices)})
 	state.sprite_render_pass.ibuf = sg.make_buffer({data = lu.sg_range(indices[:])})
+}
+
+on_init :: proc() {
+	create_sprite("assets/images/ferris.png")
+}
+
+on_frame :: proc() {
 
 	// Pass Action
 	pass_action := sg.Pass_Action {
@@ -122,7 +139,7 @@ on_frame :: proc() {
 	sg.apply_bindings(bindings)
 
 	// sg.apply_uniforms(UB_vs_params, sg_range(&Vs_Params{mvp = mvp_mat4}))
-	sg.draw(0, len(indices), 1)
+	sg.draw(0, 12, 1)
 
 	sg.end_pass()
 	sg.commit()

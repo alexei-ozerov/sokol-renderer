@@ -43,7 +43,7 @@ create_sprite :: proc(sprite_image_path: cstring) {
 	}
 	state.sprite_render_pass.sampler = sg.make_sampler(sampler_desc)
 
-    // Setup shader, pipeline
+	// Setup shader, pipeline
 	stride := (size_of(lu.Vertex))
 	shader := sg.make_shader(generic_shader_desc(sg.query_backend()))
 	pipeline_desc := sg.query_pipeline_defaults(
@@ -65,7 +65,7 @@ create_sprite :: proc(sprite_image_path: cstring) {
 	)
 	state.sprite_render_pass.pip = sg.make_pipeline(pipeline_desc)
 
-    // Setup vertex and index buffers
+	// Setup vertex and index buffers
 	vertices := []lu.Vertex {
 		// Quad 1
 		{pos = {0.5, 0.5, 0.0}, col = {1.0, 1.0, 1.0, 1.0}, uv = {0.0, 0.0}},
@@ -73,25 +73,24 @@ create_sprite :: proc(sprite_image_path: cstring) {
 		{pos = {-0.5, -0.5, 0.0}, col = {1.0, 1.0, 1.0, 1.0}, uv = {1.0, 1.0}},
 		{pos = {-0.5, 0.5, 0.0}, col = {1.0, 1.0, 1.0, 1.0}, uv = {1.0, 0.0}},
 
-
-        // Quad 2
+		// Quad 2
 		{pos = {0.5, 0.5, 0.0}, col = {1.0, 1.0, 1.0, 1.0}, uv = {0.0, 0.0}},
 		{pos = {0.5, -0.5, 0.0}, col = {1.0, 1.0, 1.0, 1.0}, uv = {0.0, 1.0}},
 		{pos = {-0.5, -0.5, 0.0}, col = {1.0, 1.0, 1.0, 1.0}, uv = {1.0, 1.0}},
 		{pos = {-0.5, 0.5, 0.0}, col = {1.0, 1.0, 1.0, 1.0}, uv = {1.0, 0.0}},
 	}
 
-    // Translate x right
-    vertices[0].pos.x -= 1
-    vertices[1].pos.x -= 1
-    vertices[2].pos.x -= 1
-    vertices[3].pos.x -= 1
+	// Translate x right
+	vertices[0].pos.x -= 1
+	vertices[1].pos.x -= 1
+	vertices[2].pos.x -= 1
+	vertices[3].pos.x -= 1
 
-    // Translate x left
-    vertices[4].pos.x += 1
-    vertices[5].pos.x += 1
-    vertices[6].pos.x += 1
-    vertices[7].pos.x += 1
+	// Translate x left
+	vertices[4].pos.x += 1
+	vertices[5].pos.x += 1
+	vertices[6].pos.x += 1
+	vertices[7].pos.x += 1
 
 	indices: [2 * 6]u16
 	quad_counter := len(vertices) / 4
@@ -119,7 +118,6 @@ on_init :: proc() {
 }
 
 on_frame :: proc() {
-
 	// Pass Action
 	pass_action := sg.Pass_Action {
 		colors = {0 = {load_action = sg.Load_Action.CLEAR, clear_value = WINDOW_BG_COL}},

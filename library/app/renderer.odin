@@ -13,7 +13,7 @@ Render_Data :: struct {
 	bind:           sg.Bindings,
 
     // Restructure
-    camera:         Renderer_Camera,
+    camera:         Render_Camera,
     qvb:            sg.Buffer, // Quad Vertex Buffer
     qib:            sg.Buffer, // Quad Index Buffer
     quad_pip:       sg.Pipeline,
@@ -21,20 +21,20 @@ Render_Data :: struct {
     quad_image:     sg.Image,
 }
 
-Renderer_Camera :: struct {
+Render_Camera :: struct {
     pos:     lu.Vec2,
     rot:     f32,
     extents: f32,
 }
 
-Renderer_Shape_Instance :: struct {
+Render_Shape_Instance :: struct {
     pos:   lu.Vec3,
     right: lu.Vec2,
     up:    lu.Vec2,
     color: lu.Vec4,
 }
 
-Renderer_Sprite_Instance :: struct {
+Render_Sprite_Instance :: struct {
     pos:       lu.Vec3,
     right:     lu.Vec2,
     up:        lu.Vec2,
@@ -44,7 +44,7 @@ Renderer_Sprite_Instance :: struct {
     tex_size:  lu.Vec2,
 }
 
-Renderer_Shape :: enum u8 {
+Render_Shape :: enum u8 {
     Triangle,
     Rectangle,
 }

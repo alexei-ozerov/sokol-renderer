@@ -64,7 +64,7 @@ event_cb :: proc "c" (ev: ^sapp.Event) {
 	context = p_runtime_context^
 
 	if p_app_context.p_ld != nil {
-		p_app_context.p_ld.on_event()
+		p_app_context.p_ld.on_event(ev)
 	}
 }
 

@@ -4,6 +4,8 @@ import "base:runtime"
 
 import "core:log"
 
+import sapp "../vendor/sokol/app"
+
 import la "../library/app"
 
 
@@ -21,7 +23,7 @@ main :: proc() {
 	}
 
 	// Setup layer
-	app_context.p_ld = &la.Layer_Data{on_init, on_event, on_frame, on_shutdown}
+	app_context.p_ld = &la.Layer_Data{on_3d_init, on_3d_event, on_3d_frame, on_3d_shutdown}
 
     // Construct State
     state.p_ac = &app_context

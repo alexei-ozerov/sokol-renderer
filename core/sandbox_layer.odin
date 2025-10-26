@@ -4,6 +4,7 @@ import "core:log"
 
 import "vendor:stb/image"
 
+import sapp "../vendor/sokol/app"
 import sg "../vendor/sokol/gfx"
 import shelpers "../vendor/sokol/helpers"
 
@@ -147,7 +148,7 @@ on_frame :: proc() {
 	sg.commit()
 }
 
-on_event :: proc() {}
+on_event :: proc(e: ^sapp.Event) {}
 
 on_shutdown :: proc() {
 	free(p_state)

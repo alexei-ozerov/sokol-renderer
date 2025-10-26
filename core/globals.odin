@@ -3,6 +3,8 @@ package main
 import sg "../vendor/sokol/gfx"
 
 
+IS_WEB :: false
+
 WINDOW_TITLE :: "Sokol Renderer"
 WINDOW_WIDTH :: 600
 WINDOW_HEIGHT :: 600

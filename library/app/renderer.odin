@@ -11,6 +11,9 @@ Render_Data :: struct {
 	sampler:        sg.Sampler,
 	view:           sg.View,
 	bind:           sg.Bindings,
+    pip:            sg.Pipeline,
+    rx: f32, // TODO (ozerova): move this pair to some entity struct maybe?
+    ry: f32,
 
     // Restructure
     camera:         Render_Camera,

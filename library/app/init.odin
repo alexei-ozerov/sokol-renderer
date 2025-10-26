@@ -10,13 +10,12 @@ run_app :: proc(
 	window_width: i32,
 	window_height: i32,
 	window_title: cstring,
-	ctx: ^runtime.Context,
-	cfg: ^App_Context,
+    ctx: ^Core_Context,
 ) {
 	// TODO (ozerova): Check on alternative ways to capture globals and 
 	//                 make them available inside of the library.
-	set_runtime_pointer(ctx)
-	set_app_ctx_pointer(cfg)
+	set_runtime_pointer(ctx.p_rc)
+	set_app_ctx_pointer(ctx.p_ac)
 
 	// Create window, bind callbacks
 	sapp.run(
@@ -24,8 +23,8 @@ run_app :: proc(
 			width = window_width,
 			height = window_height,
 			window_title = window_title,
-			allocator = sapp.Allocator(shelpers.allocator(ctx)),
-			logger = sapp.Logger(shelpers.logger(ctx)),
+			allocator = sapp.Allocator(shelpers.allocator(ctx.p_rc)),
+			logger = sapp.Logger(shelpers.logger(ctx.p_rc)),
 			init_cb = init_cb,
 			frame_cb = frame_cb,
 			cleanup_cb = cleanup_cb,

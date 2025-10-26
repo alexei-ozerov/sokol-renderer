@@ -23,13 +23,16 @@ main :: proc() {
 	// Setup layer
 	app_context.p_ld = &la.Layer_Data{on_init, on_event, on_frame, on_shutdown}
 
+    // Construct State
+    state.p_ac = &app_context
+    state.p_rc = &runtime_context
+
 	// Run application
 	la.run_app(
 		window_width = WINDOW_WIDTH,
 		window_height = WINDOW_HEIGHT,
 		window_title = WINDOW_TITLE,
-		ctx = &runtime_context,
-		cfg = &app_context,
+        ctx = &state,
 	)
 }
 

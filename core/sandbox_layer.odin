@@ -11,7 +11,56 @@ import la "../library/app"
 import lu "../library/util"
 
 
-create_sprite :: proc(sprite_image_path: cstring) {
+create_quad_buffers :: proc() {
+	vertices := []lu.Vertex {
+		// Quad 1
+		{pos = {0.5, 0.5, 0.0}, col = {1.0, 1.0, 1.0, 1.0}, uv = {0.0, 0.0}},
+		{pos = {0.5, -0.5, 0.0}, col = {1.0, 1.0, 1.0, 1.0}, uv = {0.0, 1.0}},
+		{pos = {-0.5, -0.5, 0.0}, col = {1.0, 1.0, 1.0, 1.0}, uv = {1.0, 1.0}},
+		{pos = {-0.5, 0.5, 0.0}, col = {1.0, 1.0, 1.0, 1.0}, uv = {1.0, 0.0}},
+
+		// Quad 2
+		{pos = {0.5, 0.5, 0.0}, col = {1.0, 1.0, 1.0, 1.0}, uv = {0.0, 0.0}},
+		{pos = {0.5, -0.5, 0.0}, col = {1.0, 1.0, 1.0, 1.0}, uv = {0.0, 1.0}},
+		{pos = {-0.5, -0.5, 0.0}, col = {1.0, 1.0, 1.0, 1.0}, uv = {1.0, 1.0}},
+		{pos = {-0.5, 0.5, 0.0}, col = {1.0, 1.0, 1.0, 1.0}, uv = {1.0, 0.0}},
+	}
+
+	// Translate q1 x right
+	vertices[0].pos.x -= 0.5
+	vertices[1].pos.x -= 0.5
+	vertices[2].pos.x -= 0.5
+	vertices[3].pos.x -= 0.5
+
+	// Translate q2 x left
+	vertices[4].pos.x += 0.7
+	vertices[5].pos.x += 0.7
+	vertices[6].pos.x += 0.7
+	vertices[7].pos.x += 0.7
+
+    // Setup indexes
+	indices: [2 * 6]u16
+	quad_counter := len(vertices) / 4
+
+	offset := 0
+	for obj_count in 0 ..< quad_counter {
+		i_offset := obj_count * 6
+		indices[0 + i_offset] = 0 + u16(offset)
+		indices[1 + i_offset] = 1 + u16(offset)
+		indices[2 + i_offset] = 2 + u16(offset)
+		indices[3 + i_offset] = 2 + u16(offset)
+		indices[4 + i_offset] = 3 + u16(offset)
+		indices[5 + i_offset] = 0 + u16(offset)
+
+		offset += 4
+	}
+
+	// Create the vertex and index buffers for this sprite
+	state.renderer.qvb = sg.make_buffer({data = lu.sg_range(vertices)})
+	state.renderer.qib = sg.make_buffer({data = lu.sg_range(indices[:])})
+}
+
+create_quad_pipeline :: proc(sprite_image_path: cstring) {
 	// Load Image
 	width, height, channels: i32
 	pixels := image.load(sprite_image_path, &width, &height, &channels, 4)
@@ -25,14 +74,14 @@ create_sprite :: proc(sprite_image_path: cstring) {
 		pixel_format = .RGBA8,
 		data = {mip_levels = {0 = {ptr = pixels, size = uint(width * height * 4)}}},
 	}
-	state.sprite_render_pass.image = sg.make_image(img_desc)
+	state.renderer.image = sg.make_image(img_desc)
 	defer image.image_free(pixels) // TODO: (ozerova): Check if this needs to be cleaned up in cleanup_cb()
 
 	// Create the view
 	view_desc := sg.View_Desc {
-		texture = {image = state.sprite_render_pass.image},
+		texture = {image = state.renderer.image},
 	}
-	state.sprite_render_pass.view = sg.make_view(view_desc)
+	state.renderer.view = sg.make_view(view_desc)
 
 	// Create a sampler
 	sampler_desc := sg.Sampler_Desc {
@@ -41,7 +90,7 @@ create_sprite :: proc(sprite_image_path: cstring) {
 		wrap_u     = .CLAMP_TO_EDGE,
 		wrap_v     = .CLAMP_TO_EDGE,
 	}
-	state.sprite_render_pass.sampler = sg.make_sampler(sampler_desc)
+	state.renderer.sampler = sg.make_sampler(sampler_desc)
 
 	// Setup shader, pipeline
 	stride := (size_of(lu.Vertex))
@@ -63,76 +112,31 @@ create_sprite :: proc(sprite_image_path: cstring) {
 			},
 		},
 	)
-	state.sprite_render_pass.pip = sg.make_pipeline(pipeline_desc)
+	state.renderer.quad_pip = sg.make_pipeline(pipeline_desc)
 
-	// Setup vertex and index buffers
-	vertices := []lu.Vertex {
-		// Quad 1
-		{pos = {0.5, 0.5, 0.0}, col = {1.0, 1.0, 1.0, 1.0}, uv = {0.0, 0.0}},
-		{pos = {0.5, -0.5, 0.0}, col = {1.0, 1.0, 1.0, 1.0}, uv = {0.0, 1.0}},
-		{pos = {-0.5, -0.5, 0.0}, col = {1.0, 1.0, 1.0, 1.0}, uv = {1.0, 1.0}},
-		{pos = {-0.5, 0.5, 0.0}, col = {1.0, 1.0, 1.0, 1.0}, uv = {1.0, 0.0}},
-
-		// Quad 2
-		{pos = {0.5, 0.5, 0.0}, col = {1.0, 1.0, 1.0, 1.0}, uv = {0.0, 0.0}},
-		{pos = {0.5, -0.5, 0.0}, col = {1.0, 1.0, 1.0, 1.0}, uv = {0.0, 1.0}},
-		{pos = {-0.5, -0.5, 0.0}, col = {1.0, 1.0, 1.0, 1.0}, uv = {1.0, 1.0}},
-		{pos = {-0.5, 0.5, 0.0}, col = {1.0, 1.0, 1.0, 1.0}, uv = {1.0, 0.0}},
-	}
-
-	// Translate x right
-	vertices[0].pos.x -= 1
-	vertices[1].pos.x -= 1
-	vertices[2].pos.x -= 1
-	vertices[3].pos.x -= 1
-
-	// Translate x left
-	vertices[4].pos.x += 1
-	vertices[5].pos.x += 1
-	vertices[6].pos.x += 1
-	vertices[7].pos.x += 1
-
-	indices: [2 * 6]u16
-	quad_counter := len(vertices) / 4
-
-	offset := 0
-	for obj_count in 0 ..< quad_counter {
-		i_offset := obj_count * 6
-		indices[0 + i_offset] = 0 + u16(offset)
-		indices[1 + i_offset] = 1 + u16(offset)
-		indices[2 + i_offset] = 2 + u16(offset)
-		indices[3 + i_offset] = 2 + u16(offset)
-		indices[4 + i_offset] = 3 + u16(offset)
-		indices[5 + i_offset] = 0 + u16(offset)
-
-		offset += 4
-	}
-
-	// Create the vertex and index buffers for this sprite
-	state.sprite_render_pass.vbuf = sg.make_buffer({data = lu.sg_range(vertices)})
-	state.sprite_render_pass.ibuf = sg.make_buffer({data = lu.sg_range(indices[:])})
-}
-
-on_init :: proc() {
-	create_sprite("assets/images/ferris.png")
-}
-
-on_frame :: proc() {
-	// Pass Action
+    // Setup Quad Pass
 	pass_action := sg.Pass_Action {
 		colors = {0 = {load_action = sg.Load_Action.CLEAR, clear_value = WINDOW_BG_COL}},
 	}
+    state.renderer.quad_pass = sg.Pass{action = pass_action, swapchain = shelpers.glue_swapchain()}
+}
 
-	// Set BG Col
-	sg.begin_pass(sg.Pass{action = pass_action, swapchain = shelpers.glue_swapchain()})
+on_init :: proc() {
+	create_quad_pipeline("assets/images/ferris.png")
+    create_quad_buffers()
+}
+
+on_frame :: proc() {
+	// Start Quad Pass
+	sg.begin_pass(state.renderer.quad_pass)
 
 	// Apply 
-	sg.apply_pipeline(state.sprite_render_pass.pip)
+	sg.apply_pipeline(state.renderer.quad_pip)
 	bindings := sg.Bindings {
-		vertex_buffers = {0 = state.sprite_render_pass.vbuf},
-		index_buffer = state.sprite_render_pass.ibuf,
-		views = {VIEW_sprite_texture = state.sprite_render_pass.view},
-		samplers = {0 = state.sprite_render_pass.sampler},
+		vertex_buffers = {0 = state.renderer.qvb},
+		index_buffer = state.renderer.qib,
+		views = {VIEW_sprite_texture = state.renderer.view},
+		samplers = {0 = state.renderer.sampler},
 	}
 	sg.apply_bindings(bindings)
 

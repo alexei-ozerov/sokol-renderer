@@ -23,7 +23,9 @@ main :: proc() {
 	}
 
 	// Setup layer
-	app_context.p_ld = &la.Layer_Data{on_3d_init, on_3d_event, on_3d_frame, on_3d_shutdown}
+    layer_2d := la.create_layer(on_init, on_event, on_frame, on_shutdown)
+    layer_3d := la.create_layer(on_3d_init, on_3d_event, on_3d_frame, on_3d_shutdown)
+	app_context.p_ld = &layer_3d // Switch between layers here.
 
     // Construct State
     state.p_ac = &app_context
